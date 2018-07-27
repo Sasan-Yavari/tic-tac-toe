@@ -1,0 +1,78 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+/**
+ * TODO: Set your project group and main class name here
+ */
+group 'com.metronom.homeassignment'
+mainClassName = "com.metronom.tictactoe.Main"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Log4j libs
+    compile 'log4j:log4j:1.2.17'
+    compile 'org.apache.logging.log4j:log4j-core:2.5'
+    compile 'org.apache.logging.log4j:log4j-api:2.5'
+
+    /**
+     * TODO: Put your dependencies here with the following format:
+     * GroupId:ArtifactName:Version
+     */
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+}
+
+jar {
+    baseName = project.name
+    archiveName = baseName + '.jar'
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    manifest {
+        attributes 'Implementation-Title': project.name,
+                'Main-Class': mainClassName,
+                'Class-Path': '../conf/ ' + configurations.compile.collect {'../lib/' + it.getName()}.join(' ')
+
+        exclude ('**/*.properties')
+        exclude ('**/*.xml')
+    }
+}
+
+distributions {
+    main {
+        contents {
+            eachFile {
+                details -> if ((details.name == project.name || details.name == project.name + '.bat') || (details.name == jar.archiveName && details.relativePath.toString().contains('lib/'))) {
+                    details.exclude()
+                }
+            }
+
+            from(jar) {
+                into "bin"
+            }
+
+            from('src/main/resources') {
+                into "conf"
+            }
+
+            from('bin') {
+                into "bin"
+                filter {
+                    line -> line.replace('{project.name}', project.name).replace('{jar.name}', project.name)
+                }
+                fileMode 775
+            }
+
+            from('docs/CHANGELOG.md') {
+                into ""
+                fileMode 444
+            }
+        }
+    }
+}

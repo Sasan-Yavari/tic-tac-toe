@@ -1,0 +1,4 @@
+/**
+ * TODO: Set your artifact id here
+ */
+rootProject.name = 'tic-tac-toe'

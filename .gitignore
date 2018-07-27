@@ -1,0 +1,15 @@
+# Intellij IDEA files and directories
+/.idea/
+/out/
+*.iml
+*.iws
+
+# Gradle files and directories
+/.gradle/
+/build/
+
+# Java files and directories
+*.class
+*.jar
+*.war
+*.ear

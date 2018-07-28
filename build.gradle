@@ -21,6 +21,7 @@ dependencies {
      * TODO: Put your dependencies here with the following format:
      * GroupId:ArtifactName:Version
      */
+    compile 'junit:junit:4.12'
 }
 
 compileJava {

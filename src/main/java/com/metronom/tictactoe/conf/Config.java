@@ -23,7 +23,10 @@ public class Config {
         }
 
         try {
-            boardLength = Integer.valueOf(props.getProperty(ConfigKey.BOARD_LENGTH.name()));
+            String tmp = props.getProperty(ConfigKey.BOARD_LENGTH.name());
+
+            if (tmp != null)
+                boardLength = Integer.valueOf(tmp.trim());
         } catch (NumberFormatException ignored) { }
 
         if (boardLength < 3 || boardLength > 10)

@@ -13,3 +13,5 @@
 *.jar
 *.war
 *.ear
+
+# UML diagram files

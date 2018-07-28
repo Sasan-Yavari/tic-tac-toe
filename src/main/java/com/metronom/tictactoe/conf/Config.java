@@ -1,7 +1,5 @@
 package com.metronom.tictactoe.conf;
 
-import com.metronom.tictactoe.util.Util;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Properties;
@@ -24,7 +22,9 @@ public class Config {
             throw new InvalidConfigException("Can not load configs from input");
         }
 
-        boardLength = Util.tryToInt(props.getProperty(ConfigKey.BOARD_LENGTH.name()), -1);
+        try {
+            boardLength = Integer.valueOf(props.getProperty(ConfigKey.BOARD_LENGTH.name()));
+        } catch (NumberFormatException ignored) { }
 
         if (boardLength < 3 || boardLength > 10)
             throw new InvalidConfigException("BOARD_LENGTH must be between 3 and 10");

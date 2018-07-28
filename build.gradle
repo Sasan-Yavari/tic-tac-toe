@@ -12,11 +12,6 @@ repositories {
 }
 
 dependencies {
-    // Log4j libs
-    compile 'log4j:log4j:1.2.17'
-    compile 'org.apache.logging.log4j:log4j-core:2.5'
-    compile 'org.apache.logging.log4j:log4j-api:2.5'
-
     /**
      * TODO: Put your dependencies here with the following format:
      * GroupId:ArtifactName:Version

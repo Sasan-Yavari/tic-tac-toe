@@ -7,13 +7,15 @@ public class Util {
     private static final Logger logger = LogManager.getLogger(Util.class);
 
     public static int tryToInt(String input, int defaultValue) {
-        int result;
+        int result = defaultValue;
 
-        try {
-            result = Integer.valueOf(input);
-        } catch (Exception ex) {
-            logger.trace(ex);
-            result = defaultValue;
+        if (input != null) {
+            try {
+                result = Integer.valueOf(input.trim());
+            } catch (Exception ex) {
+                logger.trace(ex);
+                result = defaultValue;
+            }
         }
 
         return result;

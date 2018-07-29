@@ -43,8 +43,10 @@ public class CommandLineUserInterface implements IUserInterface {
 
             try {
                 while (point == null) {
-                    if (player.isExternal()) {
-                        showMessage(player.getName() + "(" + player.getSymbol() + ") enter the next x,y between 1,1 and " + maxInputValue + ":");
+                    if (player.isAutomatic()) {
+                        point = player.getNextMove(game.getCopyOfBoardMatrix());
+                    } else {
+                        showMessage(player.getName() + " (" + player.getSymbol() + ") enter the next x,y between 1,1 and " + maxInputValue + ":");
 
                         response = scanner.nextLine();
 
@@ -58,10 +60,12 @@ public class CommandLineUserInterface implements IUserInterface {
                         } catch (Exception ex) {
                             throw new InvalidCoordinateException("Wrong value: " + response);
                         }
-                    } else point = player.getNextMove(game.getCopyOfBoardMatrix());
+                    }
                 }
 
                 game.play(point);
+                showMessage(player.getName() + " (" + player.getSymbol() + ") played " + (point.getX() + 1) + "," + (point.getY() + 1));
+                showStatus();
             } catch (InvalidCoordinateException ex) {
                 showError(ex.getMessage());
             }
@@ -76,11 +80,13 @@ public class CommandLineUserInterface implements IUserInterface {
     @Override
     public void showError(String message) {
         System.err.println(message);
+        System.err.flush();
+        waitToFlush();
     }
 
     @Override
-    public void update() {
-        showMessage("Game status is " + game.getStatus().getMessage());
+    public void showStatus() {
+        showMessage("Game status: " + game.getStatus().getMessage());
         AbstractPlayer[][] boardMatrix = game.getCopyOfBoardMatrix();
         StringBuilder sb = new StringBuilder();
 
@@ -94,5 +100,12 @@ public class CommandLineUserInterface implements IUserInterface {
         }
 
         showMessage(sb.toString());
+    }
+
+    private void waitToFlush() {
+        try {
+            Thread.sleep(10);
+        } catch (Exception ignored) {
+        }
     }
 }

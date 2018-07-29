@@ -3,8 +3,6 @@ package com.metronom.tictactoe.business;
 import com.metronom.tictactoe.business.entity.*;
 import com.metronom.tictactoe.business.enums.GameStatus;
 import com.metronom.tictactoe.business.exceptions.InvalidCoordinateException;
-import com.metronom.tictactoe.business.entity.Config;
-import com.metronom.tictactoe.ui.IUserInterface;
 
 public class Game {
     private static final int MAX_WIN_LENGTH = 5;
@@ -16,7 +14,6 @@ public class Game {
 
     private Config config;
     private Board board = Board.getInstance();
-    private IUserInterface ui;
     private AbstractPlayer[] players;
     private GameStatus status;
 
@@ -27,12 +24,11 @@ public class Game {
     private Game() {
     }
 
-    public void init(Config config, IUserInterface ui) {
+    public void init(Config config) {
         this.config = config;
 
         board.init(config.getBoardLength());
 
-        this.ui = ui;
         this.winLength = Math.min(config.getBoardLength(), MAX_WIN_LENGTH);
         this.players = new AbstractPlayer[3];
         this.players[0] = new HumanPlayer("Player1", config.getPlayer1Symbol());
@@ -52,7 +48,6 @@ public class Game {
             turn = 0;
 
         updateStatus();
-        ui.update();
     }
 
     public GameStatus getStatus() {

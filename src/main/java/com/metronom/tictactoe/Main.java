@@ -13,11 +13,10 @@ public class Main {
             File configFile = new File(Main.class.getResource("../../../Config.properties").getFile());
             Config config = new Config(new FileReader(configFile));
 
-            CommandLineUserInterface ui = CommandLineUserInterface.getInstance();
-
             Game game = Game.getInstance();
-            game.init(config, ui);
+            game.init(config);
 
+            CommandLineUserInterface ui = CommandLineUserInterface.getInstance();
             ui.init(game);
             ui.show();
         } catch (Exception ex) {

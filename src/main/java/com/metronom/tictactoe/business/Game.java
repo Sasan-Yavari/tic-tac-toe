@@ -1,56 +1,83 @@
 package com.metronom.tictactoe.business;
 
-import com.metronom.tictactoe.business.players.AbstractPlayer;
+import com.metronom.tictactoe.business.entity.*;
+import com.metronom.tictactoe.business.enums.GameStatus;
+import com.metronom.tictactoe.business.exceptions.InvalidCoordinateException;
+import com.metronom.tictactoe.business.entity.Config;
 import com.metronom.tictactoe.ui.IUserInterface;
 
 public class Game {
-    private int turn;
+    private static final int MAX_WIN_LENGTH = 5;
 
-    private Board board;
+    private static Game instance = new Game();
+
+    private int turn;
+    private int winLength;
+
+    private Config config;
+    private Board board = Board.getInstance();
     private IUserInterface ui;
     private AbstractPlayer[] players;
+    private GameStatus status;
 
-    public Game(Board board, IUserInterface ui, AbstractPlayer player1, AbstractPlayer player2, AbstractPlayer ai) {
-        this.board = board;
+    public static Game getInstance() {
+        return instance;
+    }
+
+    private Game() {
+    }
+
+    public void init(Config config, IUserInterface ui) {
+        this.config = config;
+
+        board.init(config.getBoardLength());
+
         this.ui = ui;
-
+        this.winLength = Math.min(config.getBoardLength(), MAX_WIN_LENGTH);
         this.players = new AbstractPlayer[3];
-        this.players[0] = player1;
-        this.players[1] = player2;
-        this.players[2] = ai;
+        this.players[0] = new HumanPlayer("Player1", config.getPlayer1Symbol());
+        this.players[1] = new HumanPlayer("Player2", config.getPlayer2Symbol());
+        this.players[2] = new AIPlayer("AI", config.getComputerSymbol());
+
         this.turn = 0;
+        this.status = GameStatus.NOT_STARTED;
+    }
+
+    public void play(Point point) throws InvalidCoordinateException {
+        board.put(point, players[turn]);
+
+        turn++;
+
+        if (turn == players.length)
+            turn = 0;
+
+        updateStatus();
+        ui.update();
+    }
+
+    public GameStatus getStatus() {
+        return status;
     }
 
     public void start() {
-        PlayResult result = PlayResult.DONE;
+        status = GameStatus.RUNNING;
+    }
 
-        while (result == PlayResult.DONE) {
-            try {
-                AbstractPlayer player = players[turn];
-                board.put(player.getNextMove(board.getCopyOfBoardMatrix()), player);
-                result = checkStatus();
+    public AbstractPlayer getNextPlayer() {
+        return players[turn];
+    }
 
-                turn++;
+    public AbstractPlayer[][] getCopyOfBoardMatrix() {
+        return board.getCopyOfBoardMatrix();
+    }
 
-                if (turn == players.length)
-                    turn = 0;
-
-                ui.update(board);
-            } catch (InvalidCoordinateException ex) {
-                ui.showError(ex.getMessage());
-            }
-        }
-
-        ui.showMessage(result.getMessage());
+    public Config getConfig() {
+        return config;
     }
 
     // TODO implement
-    private PlayResult checkStatus() {
-        PlayResult result = PlayResult.DONE;
-
+    private void updateStatus() {
         if (board.getFreeRoomCount() == 0)
-            result = PlayResult.GAME_OVER;
-
-        return result;
+            status = GameStatus.GAME_OVER;
     }
 }

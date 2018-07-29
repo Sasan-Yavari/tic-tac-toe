@@ -1,6 +1,4 @@
-package com.metronom.tictactoe.business.players;
-
-import com.metronom.tictactoe.business.entity.Point;
+package com.metronom.tictactoe.business.entity;
 
 import java.security.SecureRandom;
 
@@ -8,7 +6,7 @@ public class AIPlayer extends AbstractPlayer {
     private SecureRandom rnd = new SecureRandom();
 
     public AIPlayer(String name, char symbol) {
-        super(name, symbol);
+        super(name, symbol, false);
     }
 
     // TODO: Implement

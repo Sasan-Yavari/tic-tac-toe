@@ -1,4 +1,4 @@
-package com.metronom.tictactoe.conf;
+package com.metronom.tictactoe.business.enums;
 
 public enum ConfigKey {
     BOARD_LENGTH,

@@ -1,19 +1,22 @@
-package com.metronom.tictactoe.business;
+package com.metronom.tictactoe.business.entity;
 
-import com.metronom.tictactoe.business.entity.Point;
-import com.metronom.tictactoe.business.players.AbstractPlayer;
+import com.metronom.tictactoe.business.exceptions.InvalidCoordinateException;
 
 public class Board {
-    private static final int MAX_WIN_LENGTH = 5;
+    private static Board instance = new Board();
 
     private int freeRoomCount;
     private int boardLength;
-    private int winLength;
     private AbstractPlayer[][] boardMatrix;
 
-    public Board(int boardLength) {
+    private Board() { }
+
+    public static Board getInstance() {
+        return instance;
+    }
+
+    public void init(int boardLength) {
         this.boardLength = boardLength;
-        this.winLength = Math.min(boardLength, MAX_WIN_LENGTH);
         this.boardMatrix = new AbstractPlayer[boardLength][boardLength];
         this.freeRoomCount = boardLength * boardLength;
     }
@@ -34,9 +37,9 @@ public class Board {
 
     private void validateCoordinates(Point point) throws InvalidCoordinateException {
         if (point.getX() < 0 || point.getY() < 0 || point.getX() >= boardLength || point.getY() >= boardLength)
-            throw new InvalidCoordinateException("Invalid point " + point.toString() + ". Coordinate must be between 1,1 and " + boardLength + "," + boardLength + ".");
+            throw new InvalidCoordinateException("Invalid point. Point must be between 1,1 and " + boardLength + "," + boardLength + ".");
 
         if (boardMatrix[point.getX()][point.getY()] != null)
-            throw new InvalidCoordinateException("Invalid point " + point.toString() + ". This point is already full.");
+            throw new InvalidCoordinateException("This point is already full.");
     }
 }

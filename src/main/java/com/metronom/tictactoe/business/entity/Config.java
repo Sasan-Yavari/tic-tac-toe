@@ -1,4 +1,7 @@
-package com.metronom.tictactoe.conf;
+package com.metronom.tictactoe.business.entity;
+
+import com.metronom.tictactoe.business.enums.ConfigKey;
+import com.metronom.tictactoe.business.exceptions.InvalidConfigException;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -67,5 +70,11 @@ public class Config {
         }
 
         throw new InvalidConfigException(key + " must be 1 character");
+    }
+
+    //TODO: Implement
+    @Override
+    public String toString() {
+        return "";
     }
 }

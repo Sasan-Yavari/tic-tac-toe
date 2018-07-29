@@ -1,5 +1,7 @@
 package com.metronom.tictactoe.conf;
 
+import com.metronom.tictactoe.business.entity.Config;
+import com.metronom.tictactoe.business.exceptions.InvalidConfigException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

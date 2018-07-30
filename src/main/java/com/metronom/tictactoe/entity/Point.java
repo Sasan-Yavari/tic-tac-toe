@@ -1,4 +1,4 @@
-package com.metronom.tictactoe.business.entity;
+package com.metronom.tictactoe.entity;
 
 public class Point {
     private int x;

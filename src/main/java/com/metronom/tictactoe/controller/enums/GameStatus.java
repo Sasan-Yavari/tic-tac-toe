@@ -1,4 +1,4 @@
-package com.metronom.tictactoe.business.enums;
+package com.metronom.tictactoe.controller.enums;
 
 public enum GameStatus {
     NOT_STARTED("Not started"),

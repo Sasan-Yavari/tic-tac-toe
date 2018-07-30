@@ -1,7 +1,7 @@
 package com.metronom.tictactoe;
 
-import com.metronom.tictactoe.business.Game;
-import com.metronom.tictactoe.business.entity.Config;
+import com.metronom.tictactoe.controller.Config;
+import com.metronom.tictactoe.controller.Game;
 import com.metronom.tictactoe.ui.CommandLineUserInterface;
 
 import java.io.File;
@@ -17,8 +17,8 @@ public class Main {
             game.init(config);
 
             CommandLineUserInterface ui = CommandLineUserInterface.getInstance();
-            ui.init(game);
-            ui.show();
+            ui.show(game);
+            ui.startGame();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

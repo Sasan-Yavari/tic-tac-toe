@@ -1,7 +1,6 @@
-package com.metronom.tictactoe.conf;
+package com.metronom.tictactoe.controller;
 
-import com.metronom.tictactoe.business.entity.Config;
-import com.metronom.tictactoe.business.exceptions.InvalidConfigException;
+import com.metronom.tictactoe.exceptions.InvalidConfigException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -19,23 +18,23 @@ public class ConfigTest {
             new ConfigTestParameterModel("Config input stream is null"),
 
             new ConfigTestParameterModel("",
-                    "BOARD_LENGTH must be between 3 and 10"),
+                    "Board length must be between 3 and 10"),
 
             new ConfigTestParameterModel("BOARD_LENGTH=1\n" +
                     "COMPUTER_SYMBOL=c",
-                    "BOARD_LENGTH must be between 3 and 10"),
+                    "Board length must be between 3 and 10"),
 
             new ConfigTestParameterModel("BOARD_LENGTH=1\n" +
                     "PLAYER1_SYMBOL=x\n" +
                     "PLAYER2_SYMBOL=o\n" +
                     "COMPUTER_SYMBOL=c",
-                    "BOARD_LENGTH must be between 3 and 10"),
+                    "Board length must be between 3 and 10"),
 
             new ConfigTestParameterModel("BOARD_LENGTH=11\n" +
                     "PLAYER1_SYMBOL=x\n" +
                     "PLAYER2_SYMBOL=o\n" +
                     "COMPUTER_SYMBOL=c",
-                    "BOARD_LENGTH must be between 3 and 10"),
+                    "Board length must be between 3 and 10"),
 
             new ConfigTestParameterModel("BOARD_LENGTH=3\n" +
                     "PLAYER_SYMBOL=x\n" +

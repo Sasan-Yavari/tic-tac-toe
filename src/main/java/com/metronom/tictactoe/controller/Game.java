@@ -1,8 +1,11 @@
-package com.metronom.tictactoe.business;
+package com.metronom.tictactoe.controller;
 
-import com.metronom.tictactoe.business.entity.*;
-import com.metronom.tictactoe.business.enums.GameStatus;
-import com.metronom.tictactoe.business.exceptions.InvalidCoordinateException;
+import com.metronom.tictactoe.entity.AbstractPlayer;
+import com.metronom.tictactoe.entity.Board;
+import com.metronom.tictactoe.entity.PlayerFactory;
+import com.metronom.tictactoe.entity.Point;
+import com.metronom.tictactoe.controller.enums.GameStatus;
+import com.metronom.tictactoe.exceptions.InvalidCoordinateException;
 
 public class Game {
     private static final int MAX_WIN_LENGTH = 5;
@@ -31,16 +34,18 @@ public class Game {
 
         this.winLength = Math.min(config.getBoardLength(), MAX_WIN_LENGTH);
         this.players = new AbstractPlayer[3];
-        this.players[0] = new HumanPlayer("Player1", config.getPlayer1Symbol());
-        this.players[1] = new HumanPlayer("Player2", config.getPlayer2Symbol());
-        this.players[2] = new AIPlayer("AI", config.getComputerSymbol());
+        this.players[0] = PlayerFactory.createPlayer("Player1", config.getPlayer1Symbol(), false);
+        this.players[1] = PlayerFactory.createPlayer("Player2", config.getPlayer2Symbol(), false);
+        this.players[2] = PlayerFactory.createPlayer("AI", config.getComputerSymbol(), true);
 
         this.turn = 0;
         this.status = GameStatus.NOT_STARTED;
     }
 
-    public void play(Point point) throws InvalidCoordinateException {
-        board.put(point, players[turn]);
+    public void actionPerformed(Point point) throws InvalidCoordinateException {
+        AbstractPlayer player = players[turn];
+
+        board.put(point, player);
 
         turn++;
 
@@ -70,8 +75,8 @@ public class Game {
         return config;
     }
 
-    // TODO implement
     private void updateStatus() {
+        // TODO implement
         if (board.getFreeRoomCount() == 0)
             status = GameStatus.GAME_OVER;
     }

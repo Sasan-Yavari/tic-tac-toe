@@ -1,4 +1,4 @@
-package com.metronom.tictactoe.business.entity;
+package com.metronom.tictactoe.entity;
 
 public abstract class AbstractPlayer {
     private String name;
@@ -11,18 +11,24 @@ public abstract class AbstractPlayer {
         this.automatic = automatic;
     }
 
-    public char getSymbol() {
-        return symbol;
-    }
-
     public String getName() {
         return name;
+    }
+
+    public char getSymbol() {
+        return symbol;
     }
 
     public boolean isAutomatic() {
         return automatic;
     }
 
+    /**
+     * Accepts a copy of board data and calculates next move based on board status.
+     *
+     * @param boardMatrix copy of board data
+     * @return {@code null} if not implemented or an instance of {@link Point}
+     */
     public Point getNextMove(AbstractPlayer[][] boardMatrix) {
         return null;
     }

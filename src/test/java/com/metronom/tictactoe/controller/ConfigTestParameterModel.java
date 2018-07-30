@@ -1,4 +1,4 @@
-package com.metronom.tictactoe.conf;
+package com.metronom.tictactoe.controller;
 
 import java.io.StringReader;
 

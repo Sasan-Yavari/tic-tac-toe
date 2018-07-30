@@ -1,4 +1,4 @@
-package com.metronom.tictactoe.business.exceptions;
+package com.metronom.tictactoe.exceptions;
 
 public class InvalidConfigException extends Exception {
     public InvalidConfigException(String message) {

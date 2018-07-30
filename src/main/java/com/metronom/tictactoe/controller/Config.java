@@ -18,7 +18,7 @@ public class Config {
     private char player2Symbol;
     private char computerSymbol;
 
-    public Config(Reader reader) throws InvalidConfigException {
+    public Config(final Reader reader) throws InvalidConfigException {
         if (reader == null)
             throw new NullPointerException(MESSAGE_INPUT_STREAM_IS_NULL);
 

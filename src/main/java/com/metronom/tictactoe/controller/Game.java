@@ -1,49 +1,59 @@
 package com.metronom.tictactoe.controller;
 
-import com.metronom.tictactoe.entity.AbstractPlayer;
-import com.metronom.tictactoe.entity.Board;
-import com.metronom.tictactoe.entity.PlayerFactory;
-import com.metronom.tictactoe.entity.Point;
 import com.metronom.tictactoe.controller.enums.GameStatus;
+import com.metronom.tictactoe.entity.Board;
+import com.metronom.tictactoe.entity.Player;
+import com.metronom.tictactoe.entity.PlayerBuilder;
 import com.metronom.tictactoe.exceptions.InvalidCoordinateException;
+
+import java.awt.*;
 
 public class Game {
     private static final int MAX_WIN_LENGTH = 5;
-
-    private static Game instance = new Game();
 
     private int turn;
     private int winLength;
 
     private Config config;
     private Board board = Board.getInstance();
-    private AbstractPlayer[] players;
+    private Player[] players;
     private GameStatus status;
 
-    public static Game getInstance() {
-        return instance;
-    }
-
-    private Game() {
-    }
-
-    public void init(Config config) {
+    public Game(final Config config) {
         this.config = config;
+        this.winLength = Math.min(config.getBoardLength(), MAX_WIN_LENGTH);
 
         board.init(config.getBoardLength());
 
-        this.winLength = Math.min(config.getBoardLength(), MAX_WIN_LENGTH);
-        this.players = new AbstractPlayer[3];
-        this.players[0] = PlayerFactory.createPlayer("Player1", config.getPlayer1Symbol(), false);
-        this.players[1] = PlayerFactory.createPlayer("Player2", config.getPlayer2Symbol(), false);
-        this.players[2] = PlayerFactory.createPlayer("AI", config.getComputerSymbol(), true);
+        PlayerBuilder builder = new PlayerBuilder();
+
+        this.players = new Player[3];
+        this.players[0] = builder.withName("Player1").withSymbol(config.getPlayer1Symbol()).build();
+        this.players[1] = builder.withName("Player2").withSymbol(config.getPlayer2Symbol()).build();
+        this.players[2] = builder.withName("AI").withSymbol(config.getComputerSymbol()).withAISupport().build();
 
         this.turn = 0;
         this.status = GameStatus.NOT_STARTED;
     }
 
-    public void actionPerformed(Point point) throws InvalidCoordinateException {
-        AbstractPlayer player = players[turn];
+    public GameStatus getStatus() {
+        return status;
+    }
+
+    public Player getNextPlayer() {
+        return players[turn];
+    }
+
+    public Player[][] getCopyOfBoardMatrix() {
+        return board.getCopyOfBoardMatrix();
+    }
+
+    public Config getConfig() {
+        return config;
+    }
+
+    public void performAction(Point point) throws InvalidCoordinateException {
+        Player player = players[turn];
 
         board.put(point, player);
 
@@ -55,24 +65,8 @@ public class Game {
         updateStatus();
     }
 
-    public GameStatus getStatus() {
-        return status;
-    }
-
     public void start() {
         status = GameStatus.RUNNING;
-    }
-
-    public AbstractPlayer getNextPlayer() {
-        return players[turn];
-    }
-
-    public AbstractPlayer[][] getCopyOfBoardMatrix() {
-        return board.getCopyOfBoardMatrix();
-    }
-
-    public Config getConfig() {
-        return config;
     }
 
     private void updateStatus() {

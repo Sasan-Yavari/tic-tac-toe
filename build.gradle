@@ -5,7 +5,7 @@ apply plugin: 'application'
  * TODO: Set your project group and main class name here
  */
 group 'com.metronom.homeassignment'
-mainClassName = "com.metronom.tictactoe.Main"
+mainClassName = "com.metronom.tictactoe.TicTacToe"
 
 repositories {
     mavenCentral()

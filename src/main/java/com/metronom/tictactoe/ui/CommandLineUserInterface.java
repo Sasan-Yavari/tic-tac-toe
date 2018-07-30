@@ -1,17 +1,17 @@
 package com.metronom.tictactoe.ui;
 
-import com.metronom.tictactoe.entity.AbstractPlayer;
-import com.metronom.tictactoe.entity.Point;
-import com.metronom.tictactoe.controller.enums.GameStatus;
 import com.metronom.tictactoe.controller.Config;
 import com.metronom.tictactoe.controller.Game;
+import com.metronom.tictactoe.controller.enums.GameStatus;
+import com.metronom.tictactoe.entity.Player;
 import com.metronom.tictactoe.exceptions.InvalidCoordinateException;
 
+import java.awt.*;
 import java.util.Scanner;
 
-public class CommandLineUserInterface implements IUserInterface {
-    private static final String MESSAGE_BANNER = "Tic Tac Toe 2.0 Started" +
-            "Author: Sasan Yavari" +
+public class CommandLineUserInterface {
+    private static final String MESSAGE_BANNER = "Tic Tac Toe 2.0 Started\n" +
+            "Author: Sasan Yavari\n" +
             "This is a 3 player game. Player1 and Player2 are humans and 3rd player is computer.";
 
     private static final String MESSAGE_CONFIGS = "Configs:\n" +
@@ -38,7 +38,6 @@ public class CommandLineUserInterface implements IUserInterface {
         return instance;
     }
 
-    @Override
     public void show(Game game) {
         this.game = game;
         this.maxInputValue = game.getConfig().getBoardLength() + "," + game.getConfig().getBoardLength();
@@ -47,18 +46,18 @@ public class CommandLineUserInterface implements IUserInterface {
         showConfigs();
     }
 
-    @Override
     public void startGame() {
         game.start();
 
         while (game.getStatus() == GameStatus.RUNNING) {
-            AbstractPlayer player = game.getNextPlayer();
+            Player player = game.getNextPlayer();
 
             try {
-                Point point = readNextInput(player);
-                game.actionPerformed(point);
+                Point point = player.getNextMove(game.getCopyOfBoardMatrix()).orElseGet(() -> readFromCLI(player));
 
-                showMessage(String.format(MESSAGE_PLAYER_INPUT, player.getName(), player.getSymbol(), point.getX() + 1, point.getY() + 1));
+                game.performAction(point);
+
+                showMessage(String.format(MESSAGE_PLAYER_INPUT, player.getName(), player.getSymbol(), point.x + 1, point.y + 1));
                 showStatus();
             } catch (InvalidCoordinateException ex) {
                 showError(ex.getMessage());
@@ -83,13 +82,13 @@ public class CommandLineUserInterface implements IUserInterface {
 
     private void showStatus() {
         showMessage(String.format(MESSAGE_GAME_STATUS, game.getStatus().getMessage()));
-        AbstractPlayer[][] boardMatrix = game.getCopyOfBoardMatrix();
+        Player[][] boardMatrix = game.getCopyOfBoardMatrix();
         StringBuilder sb = new StringBuilder();
 
-        for (AbstractPlayer[] row : boardMatrix) {
+        for (Player[] row : boardMatrix) {
             sb.append("|");
 
-            for (AbstractPlayer cell : row)
+            for (Player cell : row)
                 sb.append(cell == null ? " " : cell.getSymbol()).append("|");
 
             sb.append("\n");
@@ -105,28 +104,24 @@ public class CommandLineUserInterface implements IUserInterface {
         }
     }
 
-    private Point readNextInput(AbstractPlayer player) throws InvalidCoordinateException {
+    private Point readFromCLI(Player player) {
         Point point = null;
         String response;
 
         while (point == null) {
-            if (player.isAutomatic()) {
-                point = player.getNextMove(game.getCopyOfBoardMatrix());
-            } else {
-                showMessage(String.format(MESSAGE_ENTER_NEXT_POINT, player.getName(), player.getSymbol(), maxInputValue));
+            showMessage(String.format(MESSAGE_ENTER_NEXT_POINT, player.getName(), player.getSymbol(), maxInputValue));
 
-                response = scanner.nextLine();
+            response = scanner.nextLine();
 
-                try {
-                    String[] parts = response.split(",");
+            try {
+                String[] parts = response.split(",");
 
-                    int x = Integer.valueOf(parts[0]) - 1;
-                    int y = Integer.valueOf(parts[1]) - 1;
+                int x = Integer.valueOf(parts[0]) - 1;
+                int y = Integer.valueOf(parts[1]) - 1;
 
-                    point = new Point(x, y);
-                } catch (Exception ex) {
-                    throw new InvalidCoordinateException(String.format(MESSAGE_WRONG_VALUE, response));
-                }
+                point = new Point(x, y);
+            } catch (Exception ex) {
+                showError(String.format(MESSAGE_WRONG_VALUE, response));
             }
         }
 

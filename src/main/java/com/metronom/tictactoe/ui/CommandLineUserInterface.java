@@ -3,10 +3,10 @@ package com.metronom.tictactoe.ui;
 import com.metronom.tictactoe.controller.Config;
 import com.metronom.tictactoe.controller.Game;
 import com.metronom.tictactoe.controller.enums.GameStatus;
+import com.metronom.tictactoe.entity.Coordinate;
 import com.metronom.tictactoe.entity.Player;
 import com.metronom.tictactoe.exceptions.InvalidCoordinateException;
 
-import java.awt.*;
 import java.util.Scanner;
 
 public class CommandLineUserInterface {
@@ -48,16 +48,17 @@ public class CommandLineUserInterface {
 
     public void startGame() {
         game.start();
+        showStatus();
 
         while (game.getStatus() == GameStatus.RUNNING) {
             Player player = game.getNextPlayer();
 
             try {
-                Point point = player.getNextMove(game.getCopyOfBoardMatrix()).orElseGet(() -> readFromCLI(player));
+                Coordinate coordinate = player.getNextMove(game.getCopyOfBoardMatrix()).orElseGet(() -> readFromCLI(player));
 
-                game.performAction(point);
+                game.performAction(coordinate);
 
-                showMessage(String.format(MESSAGE_PLAYER_INPUT, player.getName(), player.getSymbol(), point.x + 1, point.y + 1));
+                showMessage(String.format(MESSAGE_PLAYER_INPUT, player.getName(), player.getSymbol(), coordinate.row + 1, coordinate.column + 1));
                 showStatus();
             } catch (InvalidCoordinateException ex) {
                 showError(ex.getMessage());
@@ -104,11 +105,11 @@ public class CommandLineUserInterface {
         }
     }
 
-    private Point readFromCLI(Player player) {
-        Point point = null;
+    private Coordinate readFromCLI(Player player) {
+        Coordinate coordinate = null;
         String response;
 
-        while (point == null) {
+        while (coordinate == null) {
             showMessage(String.format(MESSAGE_ENTER_NEXT_POINT, player.getName(), player.getSymbol(), maxInputValue));
 
             response = scanner.nextLine();
@@ -119,12 +120,12 @@ public class CommandLineUserInterface {
                 int x = Integer.valueOf(parts[0]) - 1;
                 int y = Integer.valueOf(parts[1]) - 1;
 
-                point = new Point(x, y);
+                coordinate = new Coordinate(x, y);
             } catch (Exception ex) {
                 showError(String.format(MESSAGE_WRONG_VALUE, response));
             }
         }
 
-        return point;
+        return coordinate;
     }
 }

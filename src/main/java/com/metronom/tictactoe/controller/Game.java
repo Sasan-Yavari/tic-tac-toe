@@ -1,18 +1,14 @@
 package com.metronom.tictactoe.controller;
 
 import com.metronom.tictactoe.controller.enums.GameStatus;
-import com.metronom.tictactoe.entity.Board;
-import com.metronom.tictactoe.entity.Player;
-import com.metronom.tictactoe.entity.PlayerBuilder;
+import com.metronom.tictactoe.entity.*;
 import com.metronom.tictactoe.exceptions.InvalidCoordinateException;
 
-import java.awt.*;
-
 public class Game {
-    private static final int MAX_WIN_LENGTH = 5;
+    private static final int MAX_WIN_SCORE = 5;
 
     private int turn;
-    private int winLength;
+    private int winScore;
 
     private Config config;
     private Board board = Board.getInstance();
@@ -21,7 +17,7 @@ public class Game {
 
     public Game(final Config config) {
         this.config = config;
-        this.winLength = Math.min(config.getBoardLength(), MAX_WIN_LENGTH);
+        this.winScore = Math.min(config.getBoardLength(), MAX_WIN_SCORE);
 
         board.init(config.getBoardLength());
 
@@ -45,33 +41,33 @@ public class Game {
     }
 
     public Player[][] getCopyOfBoardMatrix() {
-        return board.getCopyOfBoardMatrix();
+        return board.getCopyOfTable();
     }
 
     public Config getConfig() {
         return config;
     }
 
-    public void performAction(Point point) throws InvalidCoordinateException {
+    public void performAction(final Coordinate coordinate) throws InvalidCoordinateException {
         Player player = players[turn];
-
-        board.put(point, player);
+        CellScore score = board.put(player, coordinate);
 
         turn++;
 
         if (turn == players.length)
             turn = 0;
 
-        updateStatus();
+        if (score.isGreaterThan(winScore)) {
+            if (player.equals(players[0]))
+                status = GameStatus.PLAYER1_IS_WINNER;
+            else if (player.equals(players[1]))
+                status = GameStatus.PLAYER2_IS_WINNER;
+            else status = GameStatus.AI_IS_WINNER;
+        } else if (board.getFreeRoomCount() == 0)
+            status = GameStatus.GAME_OVER;
     }
 
     public void start() {
         status = GameStatus.RUNNING;
-    }
-
-    private void updateStatus() {
-        // TODO implement
-        if (board.getFreeRoomCount() == 0)
-            status = GameStatus.GAME_OVER;
     }
 }

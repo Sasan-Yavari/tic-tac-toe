@@ -1,6 +1,5 @@
 package com.metronom.tictactoe.entity;
 
-import java.awt.*;
 import java.util.Optional;
 
 public class Player {
@@ -25,19 +24,30 @@ public class Player {
     /**
      * Accepts a copy of board data and calculates next move based on board status.
      *
-     * @param boardMatrix copy of board data
+     * @param table copy of board data
      * @return Decides about the next move based on board status.
      */
-    public Optional<Point> getNextMove(Player[][] boardMatrix) {
+    public Optional<Coordinate> getNextMove(Player[][] table) {
+
         if (aiSupport) {
-            for (int i = 0; i < boardMatrix.length; i++) {
-                for (int j = 0; j < boardMatrix[i].length; j++) {
-                    if (boardMatrix[i][j] == null)
-                        return Optional.of(new Point(i, j));
+            for (int row = 0; row < table.length; row++) {
+                for (int column = 0; column < table[row].length; column++) {
+                    if (table[row][column] == null)
+                        return Optional.of(new Coordinate(row, column));
                 }
             }
         }
 
         return Optional.empty();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Player && ((Player) obj).symbol == symbol;
+    }
+
+    @Override
+    public int hashCode() {
+        return symbol;
     }
 }

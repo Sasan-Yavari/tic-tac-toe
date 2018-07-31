@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Project base template and files added
 - Run scripts created
+- Game Win/Loose detection algorithm added
 
 ### Changed
 - Package structure and architecture changed

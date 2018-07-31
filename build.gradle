@@ -57,7 +57,7 @@ distributions {
                 into "conf"
             }
 
-            from('bin') {
+            from('scripts') {
                 into "bin"
                 filter {
                     line -> line.replace('{project.name}', project.name).replace('{jar.name}', project.name)
@@ -65,7 +65,7 @@ distributions {
                 fileMode 775
             }
 
-            from('docs/CHANGELOG.md') {
+            from('doc/CHANGELOG.md') {
                 into ""
                 fileMode 444
             }

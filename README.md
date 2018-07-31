@@ -23,45 +23,45 @@ You need followings to run the program:
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
-
+First of all run following commands to build the project:
 ```
-Give the example
-```
-
-And repeat
-
-```
-until finished
+git clone https://github.com/Sasan-Yavari/tic-tac-toe.git
+cd tic-tac-toe
+gradle installDist
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+Now you have the final build inside the following directory:
+```
+tic-tac-toe/build/install/tic-tac-toe
+```
+
+Now you can run the project using following command:
+```
+cd build/install/tic-tac-toe/bin
+./run.sh
+```
+
+or simply
+```
+cd build/install/tic-tac-toe/bin
+java -jar tic-tac-toe.jar
+```
+
+You can pass the configuration file path to the jar file like this:
+```
+java -jar tic-tac-toe.jar PATH_TO_CONFIG_FILE
+```
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
+In order to run tests, inside the root of the project, run the following command:
 ```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
+gradle test
 ```
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+Copy the `tic-tac-toe` directory from `build/install` to where ever you want to deploy the build. This directory is the final runnable version of project.
 
 ## Built With
 

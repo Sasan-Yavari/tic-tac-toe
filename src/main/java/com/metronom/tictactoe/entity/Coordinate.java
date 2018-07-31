@@ -13,8 +13,8 @@ public class Coordinate {
         this.column = column;
     }
 
-    public void validate(int min, int max) throws InvalidCoordinateException {
-        if (row < min || column < min || row > max || column > max)
+    void validate(int max) throws InvalidCoordinateException {
+        if (row < 0 || column < 0 || row > max || column > max)
             throw new InvalidCoordinateException(String.format(MESSAGE_INVALID_POINT, max, max));
     }
 }

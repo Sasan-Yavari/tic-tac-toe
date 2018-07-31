@@ -25,7 +25,7 @@ public class Board {
     }
 
     public CellScore put(final Player player, final Coordinate coordinate) throws InvalidCoordinateException {
-        coordinate.validate(0, boardLength);
+        coordinate.validate(boardLength);
 
         if (table[coordinate.row][coordinate.column] != null)
             throw new InvalidCoordinateException(MESSAGE_ALREADY_FULL);

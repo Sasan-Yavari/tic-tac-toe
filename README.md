@@ -52,6 +52,8 @@ You can pass the configuration file path to the jar file like this:
 java -jar tic-tac-toe.jar PATH_TO_CONFIG_FILE
 ```
 
+otherwise, the application will use the `Config.properties` file that exists inside the `conf` directory.
+
 ## Running the tests
 
 In order to run tests, inside the root of the project, run the following command:

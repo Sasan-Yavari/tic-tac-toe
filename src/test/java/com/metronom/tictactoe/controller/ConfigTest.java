@@ -40,12 +40,12 @@ public class ConfigTest {
                     "PLAYER_SYMBOL=x\n" +
                     "PLAYER2_SYMBOL=o\n" +
                     "COMPUTER_SYMBOL=c",
-                    "PLAYER1_SYMBOL must be 1 character"),
+                    "PLAYER1_SYMBOL must be 1 ASCII character"),
 
             new ConfigTestParameterModel("BOARD_LENGTH=3\n" +
                     "PLAYER2_SYMBOL=x\n" +
                     "COMPUTER_SYMBOL=c",
-                    "PLAYER1_SYMBOL must be 1 character"),
+                    "PLAYER1_SYMBOL must be 1 ASCII character"),
 
             new ConfigTestParameterModel("BOARD_LENGTH=3\n" +
                     "PLAYER1_SYMBOL=x\n" +
@@ -63,7 +63,19 @@ public class ConfigTest {
                     "PLAYER1_SYMBOL=x\n" +
                     "PLAYER2_SYMBOL=oo\n" +
                     "COMPUTER_SYMBOL=c",
-                    "PLAYER2_SYMBOL must be 1 character"),
+                    "PLAYER2_SYMBOL must be 1 ASCII character"),
+
+            new ConfigTestParameterModel("BOARD_LENGTH=3\n" +
+                    "PLAYER1_SYMBOL=x\n" +
+                    "PLAYER2_SYMBOL=\n" +
+                    "COMPUTER_SYMBOL=c",
+                    "PLAYER2_SYMBOL must be 1 ASCII character"),
+
+            new ConfigTestParameterModel("BOARD_LENGTH=a\n" +
+                    "PLAYER1_SYMBOL=x\n" +
+                    "PLAYER2_SYMBOL=o\n" +
+                    "COMPUTER_SYMBOL=c",
+                    "Board length must be between 3 and 10"),
 
             // Valid test cases
             new ConfigTestParameterModel("BOARD_LENGTH=3\n" +

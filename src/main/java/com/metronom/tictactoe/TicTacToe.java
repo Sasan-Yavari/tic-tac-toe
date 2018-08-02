@@ -4,11 +4,10 @@ import com.metronom.tictactoe.controller.Config;
 import com.metronom.tictactoe.controller.Game;
 import com.metronom.tictactoe.exceptions.ConfigNotFoundException;
 import com.metronom.tictactoe.ui.CommandLineUserInterface;
-import com.metronom.tictactoe.util.Util;
 
 import java.io.File;
 import java.io.FileReader;
-import java.util.Optional;
+import java.io.Reader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,7 +18,7 @@ public class TicTacToe {
         FileReader reader = null;
 
         try {
-            File configFile = getConfigFile(args).orElseThrow(ConfigNotFoundException::new);
+            File configFile = getConfigFile(args);
 
             reader = new FileReader(configFile);
             Config config = new Config(reader);
@@ -33,11 +32,20 @@ public class TicTacToe {
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Fatal error", ex);
         } finally {
-            Util.close(reader);
+            close(reader);
         }
     }
 
-    private static Optional<File> getConfigFile(String[] args) {
+    public static void close(Reader reader) {
+        if (reader != null) {
+            try {
+                reader.close();
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    private static File getConfigFile(String[] args) throws ConfigNotFoundException {
         File file = null;
 
         if (args != null && args.length > 0 && args[0] != null) {
@@ -52,6 +60,9 @@ public class TicTacToe {
                 file = null;
         }
 
-        return Optional.ofNullable(file);
+        if (file == null)
+            throw new ConfigNotFoundException();
+
+        return file;
     }
 }

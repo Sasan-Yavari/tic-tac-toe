@@ -2,14 +2,17 @@ package com.metronom.tictactoe.entity;
 
 import com.metronom.tictactoe.exceptions.InvalidCoordinateException;
 
+import java.util.Optional;
+
 public class Board {
+    private static final String MESSAGE_INVALID_POINT = "Invalid coordinate. Numbers must be between 1,1 and %d,%d.";
     private static final String MESSAGE_ALREADY_FULL = "This point is already full.";
 
     private static Board instance = new Board();
 
     private int freeRoomCount;
     private int boardLength;
-    private Player[][] table;
+    private Character[][] table;
 
     private Board() {
     }
@@ -20,140 +23,84 @@ public class Board {
 
     public void init(int boardLength) {
         this.boardLength = boardLength;
-        this.table = new Player[boardLength][boardLength];
+        this.table = new Character[boardLength][boardLength];
         this.freeRoomCount = boardLength * boardLength;
     }
 
-    public CellScore put(final Player player, final Coordinate coordinate) throws InvalidCoordinateException {
-        coordinate.validate(boardLength);
+    public void put(final Character value, final Coordinate coordinate) throws InvalidCoordinateException {
+        if (!isInRange(coordinate.row, coordinate.column))
+            throw new InvalidCoordinateException(String.format(MESSAGE_INVALID_POINT, boardLength, boardLength));
 
         if (table[coordinate.row][coordinate.column] != null)
             throw new InvalidCoordinateException(MESSAGE_ALREADY_FULL);
 
-        table[coordinate.row][coordinate.column] = player;
+        table[coordinate.row][coordinate.column] = value;
         freeRoomCount--;
-
-        CellScore scores = new CellScore();
-        scores.verticalScore = calculateVerticalScore(coordinate);
-        scores.horizontalScore = calculateHorizontalScore(coordinate);
-        scores.diagonal1Score = calculateDiagonal1Score(coordinate);
-        scores.diagonal2Score = calculateDiagonal2Score(coordinate);
-
-        return scores;
-    }
-
-    public Player[][] getCopyOfTable() {
-        return table.clone();
     }
 
     public int getFreeRoomCount() {
         return freeRoomCount;
     }
 
-    private Player getCell(int row, int column) {
+    public int getBoardLength() {
+        return boardLength;
+    }
+
+    public int calculateHorizontalScore(final Coordinate coordinate) {
+        return calculateScore(coordinate, 0, -1, 0, 1);
+    }
+
+    public int calculateVerticalScore(final Coordinate coordinate) {
+        return calculateScore(coordinate, -1, 0, 1, 0);
+    }
+
+    public int calculateDiagonal1Score(final Coordinate coordinate) {
+        return calculateScore(coordinate, -1, -1, 1, 1);
+    }
+
+    public int calculateDiagonal2Score(final Coordinate coordinate) {
+        return calculateScore(coordinate, -1, 1, 1, -1);
+    }
+
+    public Optional<Character> getCell(final int row, final int column) {
         if (row >= 0 && column >= 0 && row < boardLength && column < boardLength)
-            return table[row][column];
+            return Optional.ofNullable(table[row][column]);
 
-        return null;
+        return Optional.empty();
     }
 
-    private int calculateVerticalScore(final Coordinate coordinate) {
-        int start = coordinate.row;
-        int end = coordinate.row;
-
-        final Player basePlayer = getCell(coordinate.row, coordinate.column);
-
-        if (basePlayer != null) {
-            while (start > 0) {
-                if (basePlayer.equals(getCell(start - 1, coordinate.column))) {
-                    start--;
-                } else break;
-            }
-
-            while (end < boardLength - 1) {
-                if (basePlayer.equals(getCell(end + 1, coordinate.column))) {
-                    end++;
-                } else break;
-            }
-        }
-
-        return end - start + 1;
+    private boolean isInRange(int row, int column) {
+        return row >= 0 && column >= 0 && row < boardLength && column < boardLength;
     }
 
-    private int calculateHorizontalScore(final Coordinate coordinate) {
-        int start = coordinate.column;
-        int end = coordinate.column;
-
-        final Player basePlayer = getCell(coordinate.row, coordinate.column);
-
-        if (basePlayer != null) {
-            while (start > 0) {
-                if (basePlayer.equals(getCell(coordinate.row, start - 1))) {
-                    start--;
-                } else break;
-            }
-
-            while (end < boardLength - 1) {
-                if (basePlayer.equals(getCell(coordinate.row, end + 1))) {
-                    end++;
-                } else break;
-            }
-        }
-
-        return end - start + 1;
-    }
-
-    private int calculateDiagonal1Score(final Coordinate coordinate) {
+    private int calculateScore(final Coordinate coordinate,
+                               final int startRowInc,
+                               final int startColumnInc,
+                               final int endRowInc,
+                               final int endColumnInc) {
         int startRow = coordinate.row;
         int startColumn = coordinate.column;
         int endRow = coordinate.row;
         int endColumn = coordinate.column;
 
-        final Player basePlayer = getCell(coordinate.row, coordinate.column);
+        final Optional<Character> cellValue = getCell(coordinate.row, coordinate.column);
 
-        if (basePlayer != null) {
-            while (startRow > 0 && startColumn > 0) {
-                if (basePlayer.equals(getCell(startRow - 1, startColumn - 1))) {
-                    startRow--;
-                    startColumn--;
+        if (cellValue.isPresent()) {
+            while (isInRange(startRow, startColumn)) {
+                if (cellValue.equals(getCell(startRow + startRowInc, startColumn + startColumnInc))) {
+                    startRow += startRowInc;
+                    startColumn += startColumnInc;
                 } else break;
             }
 
-            while (endRow < boardLength - 1 && endColumn < boardLength - 1) {
-                if (basePlayer.equals(getCell(endRow + 1, endColumn + 1))) {
-                    endRow++;
-                    endColumn++;
-                } else break;
-            }
-        }
-
-        return endColumn - startColumn + 1;
-    }
-
-    private int calculateDiagonal2Score(final Coordinate coordinate) {
-        int startRow = coordinate.row;
-        int startColumn = coordinate.column;
-        int endRow = coordinate.row;
-        int endColumn = coordinate.column;
-
-        final Player basePlayer = getCell(coordinate.row, coordinate.column);
-
-        if (basePlayer != null) {
-            while (startRow < boardLength - 1 && startColumn > 0) {
-                if (basePlayer.equals(getCell(startRow + 1, startColumn - 1))) {
-                    startRow++;
-                    startColumn--;
-                } else break;
-            }
-
-            while (endRow > 0 && endColumn < boardLength - 1) {
-                if (basePlayer.equals(getCell(endRow - 1, endColumn + 1))) {
-                    endRow--;
-                    endColumn++;
+            while (isInRange(endRow, endColumn)) {
+                if (cellValue.equals(getCell(endRow + endRowInc, endColumn + endColumnInc))) {
+                    endRow += endRowInc;
+                    endColumn += endColumnInc;
                 } else break;
             }
         }
 
-        return endColumn - startColumn + 1;
+        return Math.max(endRow - startRow + 1, endColumn - startColumn + 1);
     }
 }

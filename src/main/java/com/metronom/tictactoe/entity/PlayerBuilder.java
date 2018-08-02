@@ -8,12 +8,12 @@ public class PlayerBuilder {
     public PlayerBuilder() {
     }
 
-    public PlayerBuilder withName(String name) {
+    public PlayerBuilder withName(final String name) {
         this.name = name;
         return this;
     }
 
-    public PlayerBuilder withSymbol(char symbol) {
+    public PlayerBuilder withSymbol(final char symbol) {
         this.symbol = symbol;
         return this;
     }

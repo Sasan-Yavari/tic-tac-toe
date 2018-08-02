@@ -5,6 +5,7 @@ import com.metronom.tictactoe.exceptions.InvalidConfigException;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Optional;
 import java.util.Properties;
 
 public class Config {
@@ -30,16 +31,13 @@ public class Config {
             throw new InvalidConfigException(MESSAGE_LOAD_ERROR);
         }
 
-        try {
-            String tmp = props.getProperty(ConfigKey.BOARD_LENGTH.name());
-
-            if (tmp != null)
-                boardLength = Integer.valueOf(tmp.trim());
-        } catch (NumberFormatException ignored) {
-        }
-
-        if (boardLength < 3 || boardLength > 10)
-            throw new InvalidConfigException(MESSAGE_INVALID_BOARD_LENGTH);
+        boardLength = Optional.ofNullable(props.getProperty(ConfigKey.BOARD_LENGTH.name()))
+                .map(String::trim)
+                .filter(val -> val.matches("^[0-9]+$"))
+                .map(Integer::valueOf)
+                .filter(val -> val >= 3)
+                .filter(val -> val <= 10)
+                .orElseThrow(() -> new InvalidConfigException(MESSAGE_INVALID_BOARD_LENGTH));
 
         player1Symbol = getSymbol(ConfigKey.PLAYER1_SYMBOL, props);
         player2Symbol = getSymbol(ConfigKey.PLAYER2_SYMBOL, props);
@@ -65,16 +63,11 @@ public class Config {
         return computerSymbol;
     }
 
-    private char getSymbol(ConfigKey key, Properties props) throws InvalidConfigException {
-        String tmp = props.getProperty(key.name());
-
-        if (tmp != null) {
-            tmp = tmp.trim();
-
-            if (tmp.length() == 1)
-                return tmp.charAt(0);
-        }
-
-        throw new InvalidConfigException(key + " must be 1 character");
+    private char getSymbol(final ConfigKey key, final Properties props) throws InvalidConfigException {
+        return Optional.ofNullable(props.getProperty(key.name()))
+                .map(String::trim)
+                .filter(val -> val.matches("^[a-zA-Z0-9]$"))
+                .map(val -> val.charAt(0))
+                .orElseThrow(() -> new InvalidConfigException(key + " must be 1 ASCII character"));
     }
 }

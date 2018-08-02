@@ -24,15 +24,16 @@ public class Player {
     /**
      * Accepts a copy of board data and calculates next move based on board status.
      *
-     * @param table copy of board data
+     * @param board copy of board
      * @return Decides about the next move based on board status.
      */
-    public Optional<Coordinate> getNextMove(Player[][] table) {
-
+    public Optional<Coordinate> getNextMove(final Board board) {
         if (aiSupport) {
-            for (int row = 0; row < table.length; row++) {
-                for (int column = 0; column < table[row].length; column++) {
-                    if (table[row][column] == null)
+            int length = board.getBoardLength();
+
+            for (int row = 0; row < length; row++) {
+                for (int column = 0; column < length; column++) {
+                    if (!board.getCell(row, column).isPresent())
                         return Optional.of(new Coordinate(row, column));
                 }
             }

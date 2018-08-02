@@ -1,8 +1,13 @@
 package com.metronom.tictactoe.controller;
 
 import com.metronom.tictactoe.controller.enums.GameStatus;
-import com.metronom.tictactoe.entity.*;
+import com.metronom.tictactoe.entity.Board;
+import com.metronom.tictactoe.entity.Coordinate;
+import com.metronom.tictactoe.entity.Player;
+import com.metronom.tictactoe.entity.PlayerBuilder;
 import com.metronom.tictactoe.exceptions.InvalidCoordinateException;
+
+import java.util.Optional;
 
 public class Game {
     private static final int MAX_WIN_SCORE = 5;
@@ -13,6 +18,7 @@ public class Game {
     private Config config;
     private Board board = Board.getInstance();
     private Player[] players;
+    private Player winner;
     private GameStatus status;
 
     public Game(final Config config) {
@@ -40,31 +46,36 @@ public class Game {
         return players[turn];
     }
 
-    public Player[][] getCopyOfBoardMatrix() {
-        return board.getCopyOfTable();
-    }
-
     public Config getConfig() {
         return config;
     }
 
+    public Board getBoard() {
+        return board;
+    }
+
     public void performAction(final Coordinate coordinate) throws InvalidCoordinateException {
         Player player = players[turn];
-        CellScore score = board.put(player, coordinate);
+        board.put(player.getSymbol(), coordinate);
 
         turn++;
 
         if (turn == players.length)
             turn = 0;
 
-        if (score.isGreaterThan(winScore)) {
-            if (player.equals(players[0]))
-                status = GameStatus.PLAYER1_IS_WINNER;
-            else if (player.equals(players[1]))
-                status = GameStatus.PLAYER2_IS_WINNER;
-            else status = GameStatus.AI_IS_WINNER;
-        } else if (board.getFreeRoomCount() == 0)
+        if (board.calculateHorizontalScore(coordinate) >= winScore
+                || board.calculateVerticalScore(coordinate) >= winScore
+                || board.calculateDiagonal1Score(coordinate) >= winScore
+                || board.calculateDiagonal2Score(coordinate) >= winScore) {
             status = GameStatus.GAME_OVER;
+            winner = player;
+        } else if (board.getFreeRoomCount() == 0) {
+            status = GameStatus.GAME_OVER;
+        }
+    }
+
+    public Optional<Player> getWinner() {
+        return Optional.ofNullable(winner);
     }
 
     public void start() {

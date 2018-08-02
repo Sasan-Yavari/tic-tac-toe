@@ -20,10 +20,11 @@ public class CommandLineUserInterface {
             "\tPlayer2 Symbol: %c\n" +
             "\tComputer Symbol: %c";
 
-    private static final String MESSAGE_ENTER_NEXT_POINT = "%s (%c) enter the next x,y between 1,1 and %s:";
+    private static final String MESSAGE_ENTER_NEXT_POINT = "%s (%c) enter the next row,column between 1,1 and %s:";
     private static final String MESSAGE_WRONG_VALUE = "Wrong value: %s";
     private static final String MESSAGE_PLAYER_INPUT = "%s (%c) played %d,%d";
     private static final String MESSAGE_GAME_STATUS = "Game status: %s";
+    private static final String MESSAGE_WINNER = "Winner is %s (%c)";
 
     private static CommandLineUserInterface instance = new CommandLineUserInterface();
 
@@ -54,7 +55,7 @@ public class CommandLineUserInterface {
             Player player = game.getNextPlayer();
 
             try {
-                Coordinate coordinate = player.getNextMove(game.getCopyOfBoardMatrix()).orElseGet(() -> readFromCLI(player));
+                Coordinate coordinate = player.getNextMove(game.getBoard()).orElseGet(() -> readFromCLI(player));
 
                 game.performAction(coordinate);
 
@@ -83,14 +84,19 @@ public class CommandLineUserInterface {
 
     private void showStatus() {
         showMessage(String.format(MESSAGE_GAME_STATUS, game.getStatus().getMessage()));
-        Player[][] boardMatrix = game.getCopyOfBoardMatrix();
+        game.getWinner().ifPresent(winner -> showMessage(String.format(MESSAGE_WINNER, winner.getName(), winner.getSymbol())));
         StringBuilder sb = new StringBuilder();
 
-        for (Player[] row : boardMatrix) {
-            sb.append("|");
+        for (int row = -1; row < game.getBoard().getBoardLength(); row++) {
+            for (int column = -1; column < game.getBoard().getBoardLength(); column++) {
+                if (row == -1 && column > -1)
+                    sb.append(column + 1);
+                else if (column == -1 && row > -1)
+                    sb.append(row + 1);
+                else sb.append(game.getBoard().getCell(row, column).orElse(' '));
 
-            for (Player cell : row)
-                sb.append(cell == null ? " " : cell.getSymbol()).append("|");
+                sb.append("|");
+            }
 
             sb.append("\n");
         }
@@ -117,10 +123,10 @@ public class CommandLineUserInterface {
             try {
                 String[] parts = response.split(",");
 
-                int x = Integer.valueOf(parts[0]) - 1;
-                int y = Integer.valueOf(parts[1]) - 1;
+                int row = Integer.valueOf(parts[0]) - 1;
+                int column = Integer.valueOf(parts[1]) - 1;
 
-                coordinate = new Coordinate(x, y);
+                coordinate = new Coordinate(row, column);
             } catch (Exception ex) {
                 showError(String.format(MESSAGE_WRONG_VALUE, response));
             }

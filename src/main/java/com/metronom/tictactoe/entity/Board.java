@@ -1,15 +1,15 @@
 package com.metronom.tictactoe.entity;
 
 import com.metronom.tictactoe.exceptions.InvalidCoordinateException;
+import com.metronom.tictactoe.lang.MessageKey;
+import com.metronom.tictactoe.lang.Messages;
 
 import java.util.Optional;
 
 public class Board {
-    private static final String MESSAGE_INVALID_POINT = "Invalid coordinate. Numbers must be between 1,1 and %d,%d.";
-    private static final String MESSAGE_ALREADY_FULL = "This point is already full.";
-
     private static Board instance = new Board();
 
+    private Messages messages = Messages.getInstance();
     private int freeRoomCount;
     private int boardLength;
     private Character[][] table;
@@ -29,10 +29,10 @@ public class Board {
 
     public void put(final Character value, final Coordinate coordinate) throws InvalidCoordinateException {
         if (!isInRange(coordinate.row, coordinate.column))
-            throw new InvalidCoordinateException(String.format(MESSAGE_INVALID_POINT, boardLength, boardLength));
+            throw new InvalidCoordinateException(String.format(messages.get(MessageKey.INVALID_POINT), boardLength, boardLength));
 
         if (table[coordinate.row][coordinate.column] != null)
-            throw new InvalidCoordinateException(MESSAGE_ALREADY_FULL);
+            throw new InvalidCoordinateException(messages.get(MessageKey.CELL_ALREADY_FULL));
 
         table[coordinate.row][coordinate.column] = value;
         freeRoomCount--;
@@ -99,8 +99,10 @@ public class Board {
                     endColumn += endColumnInc;
                 } else break;
             }
+
+            return Math.max(endRow - startRow + 1, endColumn - startColumn + 1);
         }
 
-        return Math.max(endRow - startRow + 1, endColumn - startColumn + 1);
+        return 0;
     }
 }

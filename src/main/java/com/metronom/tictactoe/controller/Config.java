@@ -2,6 +2,8 @@ package com.metronom.tictactoe.controller;
 
 import com.metronom.tictactoe.controller.enums.ConfigKey;
 import com.metronom.tictactoe.exceptions.InvalidConfigException;
+import com.metronom.tictactoe.lang.MessageKey;
+import com.metronom.tictactoe.lang.Messages;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -9,11 +11,7 @@ import java.util.Optional;
 import java.util.Properties;
 
 public class Config {
-    private static final String MESSAGE_INPUT_STREAM_IS_NULL = "Config input stream is null";
-    private static final String MESSAGE_LOAD_ERROR = "Can not load configs from input";
-    private static final String MESSAGE_INVALID_BOARD_LENGTH = "Board length must be between 3 and 10";
-    private static final String MESSAGE_DUPLICATE_SYMBOLS = "Players must have different symbols";
-
+    private Messages messages = Messages.getInstance();
     private int boardLength;
     private char player1Symbol;
     private char player2Symbol;
@@ -21,14 +19,14 @@ public class Config {
 
     public Config(final Reader reader) throws InvalidConfigException {
         if (reader == null)
-            throw new NullPointerException(MESSAGE_INPUT_STREAM_IS_NULL);
+            throw new NullPointerException(messages.get(MessageKey.INPUT_STREAM_IS_NULL));
 
         Properties props = new Properties();
 
         try {
             props.load(reader);
         } catch (IOException ex) {
-            throw new InvalidConfigException(MESSAGE_LOAD_ERROR);
+            throw new InvalidConfigException(messages.get(MessageKey.LOAD_ERROR));
         }
 
         boardLength = Optional.ofNullable(props.getProperty(ConfigKey.BOARD_LENGTH.name()))
@@ -37,14 +35,14 @@ public class Config {
                 .map(Integer::valueOf)
                 .filter(val -> val >= 3)
                 .filter(val -> val <= 10)
-                .orElseThrow(() -> new InvalidConfigException(MESSAGE_INVALID_BOARD_LENGTH));
+                .orElseThrow(() -> new InvalidConfigException(messages.get(MessageKey.INVALID_BOARD_LENGTH)));
 
         player1Symbol = getSymbol(ConfigKey.PLAYER1_SYMBOL, props);
         player2Symbol = getSymbol(ConfigKey.PLAYER2_SYMBOL, props);
         computerSymbol = getSymbol(ConfigKey.COMPUTER_SYMBOL, props);
 
         if (player1Symbol == player2Symbol || player1Symbol == computerSymbol || player2Symbol == computerSymbol)
-            throw new InvalidConfigException(MESSAGE_DUPLICATE_SYMBOLS);
+            throw new InvalidConfigException(messages.get(MessageKey.DUPLICATE_SYMBOLS));
     }
 
     public int getBoardLength() {

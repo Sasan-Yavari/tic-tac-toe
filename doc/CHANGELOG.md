@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Run scripts created
 - Game Win/Loose detection algorithm added
 - Java 8 art! added
+- Unit tests added
+- Resource bundle added for messages
 
 ### Changed
 - Package structure and architecture changed
@@ -20,3 +22,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Reader close bug fixed
 - Config read bugs fixed
+- `Board.calculateScore()` bug fixed

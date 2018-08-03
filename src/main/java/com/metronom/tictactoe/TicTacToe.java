@@ -8,6 +8,7 @@ import com.metronom.tictactoe.ui.CommandLineUserInterface;
 import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,7 +28,7 @@ public class TicTacToe {
             Game game = new Game(config);
 
             CommandLineUserInterface ui = CommandLineUserInterface.getInstance();
-            ui.show(game);
+            ui.show(game, System.in);
             ui.startGame();
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Fatal error", ex);
@@ -36,7 +37,7 @@ public class TicTacToe {
         }
     }
 
-    public static void close(Reader reader) {
+    private static void close(Reader reader) {
         if (reader != null) {
             try {
                 reader.close();
@@ -55,9 +56,13 @@ public class TicTacToe {
         }
 
         if (file == null) {
-            file = new File(TicTacToe.class.getResource("../../../Config.properties").getFile());
-            if (!file.exists())
-                file = null;
+            URL url = TicTacToe.class.getResource("../../../config.properties");
+
+            if (url != null) {
+                file = new File(url.getFile());
+                if (!file.exists())
+                    file = null;
+            }
         }
 
         if (file == null)

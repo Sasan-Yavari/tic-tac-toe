@@ -6,30 +6,18 @@ import com.metronom.tictactoe.controller.enums.GameStatus;
 import com.metronom.tictactoe.entity.Coordinate;
 import com.metronom.tictactoe.entity.Player;
 import com.metronom.tictactoe.exceptions.InvalidCoordinateException;
+import com.metronom.tictactoe.lang.MessageKey;
+import com.metronom.tictactoe.lang.Messages;
 
+import java.io.InputStream;
 import java.util.Scanner;
 
 public class CommandLineUserInterface {
-    private static final String MESSAGE_BANNER = "Tic Tac Toe 2.0 Started\n" +
-            "Author: Sasan Yavari\n" +
-            "This is a 3 player game. Player1 and Player2 are humans and 3rd player is computer.";
-
-    private static final String MESSAGE_CONFIGS = "Configs:\n" +
-            "\tBoard Length: %d\n" +
-            "\tPlayer1 Symbol: %c\n" +
-            "\tPlayer2 Symbol: %c\n" +
-            "\tComputer Symbol: %c";
-
-    private static final String MESSAGE_ENTER_NEXT_POINT = "%s (%c) enter the next row,column between 1,1 and %s:";
-    private static final String MESSAGE_WRONG_VALUE = "Wrong value: %s";
-    private static final String MESSAGE_PLAYER_INPUT = "%s (%c) played %d,%d";
-    private static final String MESSAGE_GAME_STATUS = "Game status: %s";
-    private static final String MESSAGE_WINNER = "Winner is %s (%c)";
-
     private static CommandLineUserInterface instance = new CommandLineUserInterface();
 
     private Game game;
-    private Scanner scanner = new Scanner(System.in);
+    private Messages messages = Messages.getInstance();
+    private Scanner scanner;
     private String maxInputValue;
 
     private CommandLineUserInterface() {
@@ -39,11 +27,12 @@ public class CommandLineUserInterface {
         return instance;
     }
 
-    public void show(Game game) {
+    public void show(Game game, InputStream inputStream) {
         this.game = game;
+        this.scanner = new Scanner(inputStream);
         this.maxInputValue = game.getConfig().getBoardLength() + "," + game.getConfig().getBoardLength();
 
-        showMessage(MESSAGE_BANNER);
+        showMessage(String.format(messages.get(MessageKey.START_BANNER), game.getWinScore()));
         showConfigs();
     }
 
@@ -59,7 +48,7 @@ public class CommandLineUserInterface {
 
                 game.performAction(coordinate);
 
-                showMessage(String.format(MESSAGE_PLAYER_INPUT, player.getName(), player.getSymbol(), coordinate.row + 1, coordinate.column + 1));
+                showMessage(String.format(messages.get(MessageKey.PLAYER_INPUT), player.getName(), player.getSymbol(), coordinate.row + 1, coordinate.column + 1));
                 showStatus();
             } catch (InvalidCoordinateException ex) {
                 showError(ex.getMessage());
@@ -79,12 +68,12 @@ public class CommandLineUserInterface {
 
     private void showConfigs() {
         Config config = game.getConfig();
-        showMessage(String.format(MESSAGE_CONFIGS, config.getBoardLength(), config.getPlayer1Symbol(), config.getPlayer2Symbol(), config.getComputerSymbol()));
+        showMessage(String.format(messages.get(MessageKey.CONFIGS), config.getBoardLength(), config.getPlayer1Symbol(), config.getPlayer2Symbol(), config.getComputerSymbol()));
     }
 
     private void showStatus() {
-        showMessage(String.format(MESSAGE_GAME_STATUS, game.getStatus().getMessage()));
-        game.getWinner().ifPresent(winner -> showMessage(String.format(MESSAGE_WINNER, winner.getName(), winner.getSymbol())));
+        showMessage(String.format(messages.get(MessageKey.GAME_STATUS), game.getStatus().getMessage()));
+        game.getWinner().ifPresent(winner -> showMessage(String.format(messages.get(MessageKey.WINNER), winner.getName(), winner.getSymbol())));
         StringBuilder sb = new StringBuilder();
 
         for (int row = -1; row < game.getBoard().getBoardLength(); row++) {
@@ -116,7 +105,7 @@ public class CommandLineUserInterface {
         String response;
 
         while (coordinate == null) {
-            showMessage(String.format(MESSAGE_ENTER_NEXT_POINT, player.getName(), player.getSymbol(), maxInputValue));
+            showMessage(String.format(messages.get(MessageKey.ENTER_NEXT_POINT), player.getName(), player.getSymbol(), maxInputValue));
 
             response = scanner.nextLine();
 
@@ -128,7 +117,7 @@ public class CommandLineUserInterface {
 
                 coordinate = new Coordinate(row, column);
             } catch (Exception ex) {
-                showError(String.format(MESSAGE_WRONG_VALUE, response));
+                showError(String.format(messages.get(MessageKey.WRONG_VALUE), response));
             }
         }
 

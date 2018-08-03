@@ -4,7 +4,6 @@ import java.io.StringReader;
 
 class ConfigTestParameterModel {
     StringReader reader;
-    String errorMessage;
 
     int boardLength;
 
@@ -12,13 +11,11 @@ class ConfigTestParameterModel {
     char player2Symbol;
     char computerSymbol;
 
-    ConfigTestParameterModel(String errorMessage) {
-        this.errorMessage = errorMessage;
+    ConfigTestParameterModel() {
     }
 
-    ConfigTestParameterModel(String input, String errorMessage) {
+    ConfigTestParameterModel(String input) {
         this.reader = new StringReader(input);
-        this.errorMessage = errorMessage;
     }
 
     ConfigTestParameterModel(String input, int boardLength, char player1Symbol, char player2Symbol, char computerSymbol) {

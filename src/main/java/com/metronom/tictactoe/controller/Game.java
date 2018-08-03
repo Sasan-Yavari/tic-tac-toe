@@ -54,6 +54,14 @@ public class Game {
         return board;
     }
 
+    public Optional<Player> getWinner() {
+        return Optional.ofNullable(winner);
+    }
+
+    public int getWinScore() {
+        return winScore;
+    }
+
     public void performAction(final Coordinate coordinate) throws InvalidCoordinateException {
         Player player = players[turn];
         board.put(player.getSymbol(), coordinate);
@@ -72,10 +80,6 @@ public class Game {
         } else if (board.getFreeRoomCount() == 0) {
             status = GameStatus.GAME_OVER;
         }
-    }
-
-    public Optional<Player> getWinner() {
-        return Optional.ofNullable(winner);
     }
 
     public void start() {

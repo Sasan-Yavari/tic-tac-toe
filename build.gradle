@@ -36,7 +36,6 @@ jar {
                 'Class-Path': '../conf/ ' + configurations.compile.collect {'../lib/' + it.getName()}.join(' ')
 
         exclude ('**/*.properties')
-        exclude ('**/*.xml')
     }
 }
 

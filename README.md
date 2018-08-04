@@ -6,8 +6,6 @@ configurable between 3x3 and 10x10. And we also want the symbols
 (usually O and X) to be configurable. Also it should be for 3 players
 instead of just 2.
 
-This program created based on [Metronom](https://www.metronom.com/) home assignment task for the hiring process.
-
 ## Design
 
 All the classes inside this program are created to be testable, readable and maintainable and the program itself is easy to deploy.

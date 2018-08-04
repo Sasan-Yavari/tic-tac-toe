@@ -11,9 +11,9 @@ import org.junit.runners.Parameterized;
 import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class GameTestParameterized {
@@ -86,8 +86,6 @@ public class GameTestParameterized {
 
     @Test
     public void performAction() throws InvalidCoordinateException {
-        game.start();
-
         for (Coordinate coordinate : coordinates)
             game.performAction(coordinate);
 

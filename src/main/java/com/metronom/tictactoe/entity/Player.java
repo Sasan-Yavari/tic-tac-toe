@@ -22,10 +22,14 @@ public class Player {
     }
 
     /**
-     * Accepts a copy of board data and calculates next move based on board status.
+     * Accepts an instance of {@link Board} and calculates next move based on board status.
+     * If this is not an automatic player, this method will return an {@code Optional.empty()}
+     *
+     * Note that, AI of this game is a dummy one and simply selects the first empty cell
+     * by scanning the board from the top left point.
      *
      * @param board copy of board
-     * @return Decides about the next move based on board status.
+     * @return the next move of the AI player or {@code Optional.empty()} for non-ai players.
      */
     public Optional<Coordinate> getNextMove(final Board board) {
         if (aiSupport) {

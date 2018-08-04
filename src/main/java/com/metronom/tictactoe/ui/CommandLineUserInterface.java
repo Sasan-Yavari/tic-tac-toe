@@ -9,7 +9,8 @@ import com.metronom.tictactoe.exceptions.InvalidCoordinateException;
 import com.metronom.tictactoe.lang.MessageKey;
 import com.metronom.tictactoe.lang.Messages;
 
-import java.io.InputStream;
+import java.io.PrintStream;
+import java.io.Reader;
 import java.util.Scanner;
 
 public class CommandLineUserInterface {
@@ -18,6 +19,8 @@ public class CommandLineUserInterface {
     private Game game;
     private Messages messages = Messages.getInstance();
     private Scanner scanner;
+    private PrintStream messagesOutput;
+    private PrintStream errorsOutput;
     private String maxInputValue;
 
     private CommandLineUserInterface() {
@@ -27,17 +30,33 @@ public class CommandLineUserInterface {
         return instance;
     }
 
-    public void show(Game game, InputStream inputStream) {
+    /**
+     * Initializes the UI and displays the game banner.
+     *
+     * @param game        instance of {@link Game}
+     * @param usersInput source of the user's input
+     */
+    public void show(Game game, Reader usersInput, PrintStream messagesOutput, PrintStream errorsOutput) {
         this.game = game;
-        this.scanner = new Scanner(inputStream);
+        this.scanner = new Scanner(usersInput);
+        this.messagesOutput = messagesOutput;
+        this.errorsOutput = errorsOutput;
         this.maxInputValue = game.getConfig().getBoardLength() + "," + game.getConfig().getBoardLength();
 
         showMessage(String.format(messages.get(MessageKey.START_BANNER), game.getWinScore()));
         showConfigs();
     }
 
+    /**
+     * Starts the main loop for users interaction.
+     * <br/><br/>
+     * This method starts the game and inside a loop, takes the users input and
+     * puts them inside the board using the {@link Game}'s {@code performAction} method.
+     * After that, last move's data will be shown and the game status will be shown.
+     * <br/><br/>
+     * This loop runs while the game status is {@code GameStatus.RUNNING}
+     */
     public void startGame() {
-        game.start();
         showStatus();
 
         while (game.getStatus() == GameStatus.RUNNING) {
@@ -56,21 +75,50 @@ public class CommandLineUserInterface {
         }
     }
 
+    /**
+     * Writes a message to UI's message {@link PrintStream}
+     * and waits for flush to avoid interference with other messages.
+     *
+     * @param message the message to show to the user
+     */
     private void showMessage(String message) {
-        System.out.println(message);
+        messagesOutput.println(message);
+        messagesOutput.flush();
+        waitForFlush();
     }
 
-    private void showError(String message) {
-        System.err.println(message);
-        System.err.flush();
-        waitToFlush();
+    /**
+     * Writes an error to UI's error {@link PrintStream}
+     * and waits for flush to avoid interference with other messages.
+     *
+     * @param error the error to show to the user
+     */
+    private void showError(String error) {
+        errorsOutput.println(error);
+        errorsOutput.flush();
+        waitForFlush();
     }
 
+    /**
+     * Simply sleeps for 10 milliseconds
+     */
+    private void waitForFlush() {
+        try {
+            Thread.sleep(10);
+        } catch (Exception ignored) { }
+    }
+
+    /**
+     * Shows the running game configs to user
+     */
     private void showConfigs() {
         Config config = game.getConfig();
         showMessage(String.format(messages.get(MessageKey.CONFIGS), config.getBoardLength(), config.getPlayer1Symbol(), config.getPlayer2Symbol(), config.getComputerSymbol()));
     }
 
+    /**
+     * Shows the game status and the whole board to user
+     */
     private void showStatus() {
         showMessage(String.format(messages.get(MessageKey.GAME_STATUS), game.getStatus().getMessage()));
         game.getWinner().ifPresent(winner -> showMessage(String.format(messages.get(MessageKey.WINNER), winner.getName(), winner.getSymbol())));
@@ -93,13 +141,13 @@ public class CommandLineUserInterface {
         showMessage(sb.toString());
     }
 
-    private void waitToFlush() {
-        try {
-            Thread.sleep(10);
-        } catch (Exception ignored) {
-        }
-    }
-
+    /**
+     * Reads user input from command line interface. This method keeps prompting the user while
+     * the input value is not valid.
+     *
+     * @param player the player that should give the next input
+     * @return next {@link Coordinate} given by the player
+     */
     private Coordinate readFromCLI(Player player) {
         Coordinate coordinate = null;
         String response;

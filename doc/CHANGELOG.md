@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Java 8 art! added
 - Unit tests added
 - Resource bundle added for messages
+- JavaDoc added for methods
 
 ### Changed
 - Package structure and architecture changed

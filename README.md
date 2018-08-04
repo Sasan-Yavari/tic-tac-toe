@@ -8,14 +8,42 @@ instead of just 2.
 
 This program created based on [Metronom](https://www.metronom.com/) home assignment task for hiring process.
 
+## Design
+
+All the classes inside this program are created to be testable, readable and maintainable and the program itself is easy to deploy.
+Followings are the packages and layers of the program:
+
+- `entity` package is the lowest layer of the program and it's classes does not know anything about the other layers.
+They have no dependencies to other layers and others are depended on them. That is the deepest layer of the business
+and changing it must happen rarely.
+
+- `controller` package is the middle layer that depends on the business and does not know anything about the higher ones.
+Classes in this layer created in a way that we can test them easily. We can change these classes simpler than business layer.
+Just we have to know that the `ui` layer is depended to this and if we change this layer, we have to change the `ui` too.
+
+- `ui` layer is the highest layer that depends on almost everything and we can change it easily because no layer is depended on it.
+We have a simple `CommandLineUserInterface` inside this package and we can implement any type of user interfaces without
+a need to change other layers. We can implement a `SwingUserInterface` or `WebUserInterface` without going deep inside the other layers.
+
+- We have two common packages that we may use their classes everywhere. `exceptions` and `lang` packages have no logic inside
+them and they are just message and exception providers.
+
+### Design Patterns
+
+- `Config` is implemented according to `Singleton` pattern.
+- `Board` is implemented according to `Singleton` pattern.
+- `CommandLineUserInterface` is implemented according to `Singleton` pattern.
+- `Player` is implemented according to `Builder` pattern.
+
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+Read the deployment section for notes on how to deploy the project on a live system.
 
 ### Prerequisites
 
 You need followings to build the program:
-- Latest version of gradle
+- Latest version of [Gradle](https://gradle.org/)
 - JDK 1.8+
 
 You need followings to run the program:
@@ -53,13 +81,6 @@ java -jar tic-tac-toe.jar PATH_TO_CONFIG_FILE
 ```
 
 otherwise, the application will use the `Config.properties` file that exists inside the `conf` directory.
-
-## Running the tests
-
-In order to run tests, inside the root of the project, run the following command:
-```
-gradle test
-```
 
 ## Deployment
 

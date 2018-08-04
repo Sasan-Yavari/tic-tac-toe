@@ -5,12 +5,11 @@ import com.metronom.tictactoe.controller.Game;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.StringBufferInputStream;
 import java.io.StringReader;
 
 public class CommandLineUserInterfaceTest {
     private CommandLineUserInterface ui = CommandLineUserInterface.getInstance();
-    private StringBufferInputStream inputStream = new StringBufferInputStream("3,1\n2,1\n3,2\n2,2\n3,3");
+    private StringReader inputStream = new StringReader("3,1\n2,1\n3,2\n2,2\n3,3");
 
     @Before
     public void setUp() throws Exception {
@@ -19,7 +18,7 @@ public class CommandLineUserInterfaceTest {
                         "PLAYER1_SYMBOL=x\n" +
                         "PLAYER2_SYMBOL=o\n" +
                         "COMPUTER_SYMBOL=c");
-        ui.show(new Game(new Config(reader)), inputStream);
+        ui.show(new Game(new Config(reader)), inputStream, System.out, System.err);
     }
 
     @Test(timeout = 3000)

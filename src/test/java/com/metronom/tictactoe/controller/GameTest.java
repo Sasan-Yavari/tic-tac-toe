@@ -29,8 +29,6 @@ public class GameTest {
 
     @Test
     public void getStatus() {
-        assertEquals(GameStatus.NOT_STARTED, game.getStatus());
-        game.start();
         assertEquals(GameStatus.RUNNING, game.getStatus());
     }
 
@@ -71,12 +69,6 @@ public class GameTest {
         assertFalse(game.getWinner().isPresent());
     }
 
-    @Test
-    public void start() {
-        game.start();
-        assertEquals(GameStatus.RUNNING, game.getStatus());
-    }
-
     @Test(expected = InvalidCoordinateException.class)
     public void performActionWrongCoordinate() throws InvalidCoordinateException {
         game.performAction(new Coordinate(-1, 20)); //x
@@ -90,8 +82,6 @@ public class GameTest {
 
     @Test
     public void performActionFullGameWithWinner() throws InvalidCoordinateException {
-        game.start();
-
         Player player1 = game.getNextPlayer();
         assertEquals('x', player1.getSymbol());
         game.performAction(new Coordinate(0, 0)); //x
@@ -126,8 +116,6 @@ public class GameTest {
 
     @Test
     public void performActionFullGameWithoutWinner() throws InvalidCoordinateException {
-        game.start();
-
         game.performAction(new Coordinate(0, 0)); //x
         game.performAction(new Coordinate(1, 0)); //o
         game.performAction(new Coordinate(2, 0)); //c

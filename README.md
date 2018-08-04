@@ -30,7 +30,6 @@ them and they are just message and exception providers.
 
 ### Design Patterns
 
-- `Config` is implemented according to `Singleton` pattern.
 - `Board` is implemented according to `Singleton` pattern.
 - `CommandLineUserInterface` is implemented according to `Singleton` pattern.
 - `Player` is implemented according to `Builder` pattern.
@@ -92,4 +91,4 @@ Copy the `tic-tac-toe` directory from `build/install` to where ever you want to 
 
 ## Authors
 
-* **Sasan Yavari** - *Initial work* - [Sasan-Yavari](https://github.com/Sasan-Yavari)
+* **Sasan Yavari** - [Sasan-Yavari](https://github.com/Sasan-Yavari)

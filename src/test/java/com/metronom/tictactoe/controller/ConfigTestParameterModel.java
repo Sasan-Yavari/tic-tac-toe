@@ -11,9 +11,6 @@ class ConfigTestParameterModel {
     char player2Symbol;
     char computerSymbol;
 
-    ConfigTestParameterModel() {
-    }
-
     ConfigTestParameterModel(String input) {
         this.reader = new StringReader(input);
     }

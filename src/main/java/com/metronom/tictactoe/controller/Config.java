@@ -16,6 +16,7 @@ public class Config {
     private char player1Symbol;
     private char player2Symbol;
     private char computerSymbol;
+    private boolean winIfFourCornerTaken;
 
     /**
      * This constructor takes a {@link Reader} and if the <tt>reader</tt> is valid, instantiates <tt>Config</tt>
@@ -49,6 +50,13 @@ public class Config {
         player1Symbol = getSymbol(ConfigKey.PLAYER1_SYMBOL, props);
         player2Symbol = getSymbol(ConfigKey.PLAYER2_SYMBOL, props);
         computerSymbol = getSymbol(ConfigKey.COMPUTER_SYMBOL, props);
+
+        winIfFourCornerTaken = Optional.ofNullable(props.getProperty(ConfigKey.WIN_IF_FOUR_CORNER_TAKEN.name()))
+                .map(String::trim)
+                .map(String::toLowerCase)
+                .filter(val -> val.matches("^true|false$"))
+                .map(Boolean::valueOf)
+                .orElseThrow(() -> new InvalidConfigException(messages.get(MessageKey.INVALID_BOOLEAN_CONFIG_VALUE)));
 
         if (player1Symbol == player2Symbol || player1Symbol == computerSymbol || player2Symbol == computerSymbol)
             throw new InvalidConfigException(messages.get(MessageKey.DUPLICATE_SYMBOLS));
@@ -89,6 +97,14 @@ public class Config {
      */
     public char getComputerSymbol() {
         return computerSymbol;
+    }
+
+    /**
+     * TODO:
+     * @return
+     */
+    public boolean isWinIfFourCornerTaken() {
+        return winIfFourCornerTaken;
     }
 
     /**

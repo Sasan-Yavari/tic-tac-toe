@@ -119,6 +119,19 @@ public class Board {
     }
 
     /**
+     * TODO:
+     * @return
+     */
+    public Character[] getCorners() {
+        return new Character[] {
+                table[0][0],
+                table[0][boardLength - 1],
+                table[boardLength - 1][0],
+                table[boardLength - 1][boardLength - 1]
+        };
+    }
+
+    /**
      * Gives the value of the given coordinate as an {@code Optional<Character>}.
      * This method will return {@code Optional.empty} if the location is empty or
      * if the given coordinate is not in the range of the board.

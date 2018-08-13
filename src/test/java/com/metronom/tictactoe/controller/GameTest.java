@@ -19,10 +19,11 @@ public class GameTest {
     @Before
     public void setUp() throws Exception {
         StringReader reader = new StringReader(
-                "BOARD_LENGTH=3\n" +
+                "BOARD_LENGTH=4\n" +
                         "PLAYER1_SYMBOL=x\n" +
                         "PLAYER2_SYMBOL=o\n" +
-                        "COMPUTER_SYMBOL=c");
+                        "COMPUTER_SYMBOL=c\n" +
+                        "WIN_IF_FOUR_CORNER_TAKEN=true");
         config = new Config(reader);
         game = new Game(config);
     }
@@ -130,6 +131,26 @@ public class GameTest {
 
         assertEquals(GameStatus.GAME_OVER, game.getStatus());
         assertFalse(game.getWinner().isPresent());
+    }
+
+    @Test
+    public void performActionFullGameWithWinnerInAllCorners() throws Exception {
+        game.performAction(new Coordinate(0, 0)); //x
+        game.performAction(new Coordinate(0, 1)); //o
+        game.performAction(new Coordinate(0, 2)); //c
+        game.performAction(new Coordinate(0, 3)); //x
+
+        game.performAction(new Coordinate(1, 0)); //o
+        game.performAction(new Coordinate(1, 1)); //c
+
+        game.performAction(new Coordinate(3, 0)); //x
+        game.performAction(new Coordinate(2, 0)); //o
+        game.performAction(new Coordinate(2, 1)); //c
+        game.performAction(new Coordinate(3, 3)); //x
+
+        assertEquals(GameStatus.GAME_OVER, game.getStatus());
+        assertTrue(game.getWinner().isPresent());
+        assertEquals('x', game.getWinner().get().getSymbol());
     }
 
     @Test

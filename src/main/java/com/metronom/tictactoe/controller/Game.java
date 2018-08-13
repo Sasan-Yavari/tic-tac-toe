@@ -125,6 +125,22 @@ public class Game {
                 || board.calculateDiagonal2Score(coordinate) >= winScore) {
             status = GameStatus.GAME_OVER;
             winner = player;
+        } else if (config.isWinIfFourCornerTaken() && coordinate.isThisACorner(board.getBoardLength())) {
+            Character[] conrners = board.getCorners();
+
+            boolean allValuesAreEqual = true;
+
+            for (Character character : conrners) {
+                if (character != null && character != player.getSymbol()) {
+                    allValuesAreEqual = false;
+                    break;
+                }
+            }
+
+            if (allValuesAreEqual) {
+                status = GameStatus.GAME_OVER;
+                winner = player;
+            }
         } else if (board.getFreeRoomCount() == 0) {
             status = GameStatus.GAME_OVER;
         }
